@@ -250,3 +250,7 @@ if (HTTPS_ENABLED) {
         console.log(`HTTPS Server listening on port ${HTTPS_PORT}`);
     });
 }  
+module.exports = (req, res) => {
+    // 处理请求的代码
+    res.status(200).send('Hello from API');
+  };
