@@ -89,8 +89,8 @@ app.get('/models', (req, res) => {
 // --------------------------------------------------------
 // -- Endpoint: infer AWS Bedrock Proxy Chat Completions --
 // --------------------------------------------------------
-app.post('/chat/completions', async (req, res) => {
-    if (CONSOLE_LOGGING) { console.log("\n\n--new '/chat/completions' request --------------------------------"); }
+app.post('/v1/chat/completions', async (req, res) => {
+    if (CONSOLE_LOGGING) { console.log("\n\n--new '/v1/chat/completions' request --------------------------------"); }
 
     // Extract parameters from the incoming request
     const {
