@@ -10,12 +10,6 @@ dotenv.config();
 import { toBoolean, extractAWSCreds } from "./utils.js";
 
 const CONSOLE_LOGGING = toBoolean(process.env.CONSOLE_LOGGING);
-const HTTP_ENABLED = toBoolean(process.env.HTTP_ENABLED);
-const HTTP_PORT = process.env.HTTP_PORT;
-const HTTPS_ENABLED = toBoolean(process.env.HTTPS_ENABLED);
-const HTTPS_PORT = process.env.HTTPS_PORT;
-const HTTPS_KEY_PATH = process.env.HTTPS_KEY_PATH;
-const HTTPS_CERT_PATH = process.env.HTTPS_CERT_PATH;
 const IP_RATE_LIMIT_ENABLED = toBoolean(process.env.IP_RATE_LIMIT_ENABLED);
 const IP_RATE_LIMIT_WINDOW_MS = parseInt(process.env.IP_RATE_LIMIT_WINDOW_MS);
 const IP_RATE_LIMIT_MAX_REQUESTS = parseInt(process.env.IP_RATE_LIMIT_MAX_REQUESTS);
@@ -40,10 +34,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import rateLimit from 'express-rate-limit';
 import { fileURLToPath } from 'url';
-import https from 'https';
-import http from 'http';
 import path from 'path';
-import fs from 'fs';
 import { stdout } from 'process';
 
 const app = express();
@@ -76,7 +67,6 @@ app.use((err, req, res, next) => {
     }
 });
 
-
 // -------------------
 // -- Info endpoint --
 // -------------------
@@ -94,21 +84,6 @@ app.get('/models', (req, res) => {
     }).catch(err => {
         res.status(500).send('Failed to fetch models');
     });
-});
-
-app.post('/test/chat/completions', async (req, res) => {
-    res.writeHead(200, {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive'
-    });
-
-    const data = {choices: [{delta: {
-        content: "(ツ) → Test message from Bedrock Proxy Endpoint"
-    }}]};
-    res.write(`data: ${JSON.stringify(data)}\n\n`);
-
-    res.end();
 });
 
 // --------------------------------------------------------
@@ -229,28 +204,7 @@ app.post('/chat/completions', async (req, res) => {
     }
 });
 
-
 // ----------------------
-// -- start the server --
+// -- export the app --
 // ----------------------
-if (HTTP_ENABLED) {
-    // start the HTTP server
-    const httpServer = http.createServer(app);
-    httpServer.listen(HTTP_PORT, () => {
-        console.log(`HTTP Server listening on port ${HTTP_PORT}`);
-    });
-}
-if (HTTPS_ENABLED) {
-    // start the HTTPS server
-    const httpsServer = https.createServer({
-        key: fs.readFileSync(HTTPS_KEY_PATH, 'utf-8'),
-        cert: fs.readFileSync(HTTPS_CERT_PATH, 'utf-8')
-    }, app);
-    httpsServer.listen(HTTPS_PORT, () => {
-        console.log(`HTTPS Server listening on port ${HTTPS_PORT}`);
-    });
-}  
-module.exports = (req, res) => {
-    // 处理请求的代码
-    res.status(200).send('Hello from API');
-  };
+export default app; // 导出 Express 应用以供 Vercel 使用
