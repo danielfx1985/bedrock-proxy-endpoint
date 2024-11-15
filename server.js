@@ -81,6 +81,7 @@ app.use((err, req, res, next) => {
 // -- Info endpoint --
 // -------------------
 app.get('/', (req, res) => {
+    console.log("homepage");
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
