@@ -72,7 +72,7 @@ app.use((err, req, res, next) => {
 // -------------------
 app.get('/', (req, res) => {
     console.log("homepage");
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index2.html'));
 });
 
 // -------------------------------------
