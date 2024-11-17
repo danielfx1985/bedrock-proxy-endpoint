@@ -28,7 +28,7 @@ const IP_RATE_LIMIT_MAX_REQUESTS = parseInt(process.env.IP_RATE_LIMIT_MAX_REQUES
 import {
     bedrockWrapper,
     listBedrockWrapperSupportedModels
-} from "./local-modules/bedrock-wrapper/bedrock-wrapper.js";
+} from "bedrock-wrapper";
 
 console.log("    ============================ PROXY ENDPOINT =============================");
 console.log("");
