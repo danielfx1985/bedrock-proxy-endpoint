@@ -49,8 +49,9 @@ import { stdout } from 'process';
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.use(bodyParser.json());
-  // 启用 trust proxy
-  app.set('trust proxy', true);
+// 启用 trust proxy
+app.set('trust proxy', true);
+
 // ------------------------------------
 // -- setup rate limiting middleware --
 // ------------------------------------
@@ -77,7 +78,6 @@ app.use((err, req, res, next) => {
     }
 });
 
-
 // -------------------
 // -- Info endpoint --
 // -------------------
@@ -92,34 +92,15 @@ app.get('/models', (req, res) => {
     listBedrockWrapperSupportedModels().then(supportedModels => {
         res.json(supportedModels);
     }).catch(err => {
+        console.error("Failed to fetch models:", err);
         res.status(500).send('Failed to fetch models');
     });
-});
-
-app.post('/test/chat/completions', async (req, res) => {
-    res.writeHead(200, {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive'
-    });
-
-    const data = {
-        choices: [{
-            delta: {
-                content: "(ツ) → Test message from Bedrock Proxy Endpoint"
-            }
-        }]
-    };
-    res.write(`data: ${JSON.stringify(data)}\n\n`);
-
-    res.end();
 });
 
 // --------------------------------------------------------
 // -- Endpoint: infer AWS Bedrock Proxy Chat Completions --
 // --------------------------------------------------------
 app.post('/v1/chat/completions', async (req, res) => {
-    // 从请求体中提取参数
     const {
         messages = [],
         model = 'claude-3-5-sonnet',
@@ -183,6 +164,11 @@ app.post('/v1/chat/completions', async (req, res) => {
             top_p
         };
 
+        // 设置超时
+        const timeout = setTimeout(() => {
+            res.status(504).json({ error: { message: "Request timed out", code: 504 } });
+        }, 10000); // 10秒超时
+
         if (stream) {
             // 设置流式响应的头部
             res.writeHead(200, {
@@ -234,6 +220,9 @@ app.post('/v1/chat/completions', async (req, res) => {
             for await (const data of response) {
                 completeResponse += data;
             }
+
+            // 清除超时
+            clearTimeout(timeout);
 
             // 设置 JSON 响应的头部
             res.setHeader('Content-Type', 'application/json');
@@ -291,4 +280,4 @@ if (HTTPS_ENABLED) {
     httpsServer.listen(HTTPS_PORT, () => {
         console.log(`HTTPS Server listening on port ${HTTPS_PORT}`);
     });
-}  
+}
