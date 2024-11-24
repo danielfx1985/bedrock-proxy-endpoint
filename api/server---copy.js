@@ -49,8 +49,7 @@ import { stdout } from 'process';
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.use(bodyParser.json());
-  // 启用 trust proxy
-  app.set('trust proxy', true);
+
 // ------------------------------------
 // -- setup rate limiting middleware --
 // ------------------------------------
