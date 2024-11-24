@@ -166,8 +166,8 @@ app.post('/v1/chat/completions', async (req, res) => {
 
         // 设置超时
         const timeout = setTimeout(() => {
-            res.status(504).json({ error: { message: "Request timed out", code: 50400 } });
-        }, 10000); // 10秒超时
+            res.status(504).json({ error: { message: "Request timed out", code: 504 } });
+        }, 100000); // 10秒超时
 
         if (stream) {
             // 设置流式响应的头部
