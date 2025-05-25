@@ -7,23 +7,6 @@
 //anthropic.claude-3-5-sonnet-20241022-v2:0
 // v2:arn:aws:bedrock:us-east-1:009160038668:inference-profile/us.anthropic.claude-3-5-sonnet-20241022-v2:0
 export const bedrock_models = [
-     {
-        // ==========================
-        // == Claude 3.7 Sonnet v1 ==
-        // ==========================
-        "modelName":                     "Claude-3-7-Sonnet",
-        "modelId":                       "arn:aws:bedrock:us-east-1:009160038668:inference-profile/us.anthropic.claude-sonnet-4-20250514-v1:0",
-        "messages_api":                  true,
-        "system_as_separate_field":      true,
-        "display_role_names":            true,
-        "max_tokens_param_name":         "max_tokens",
-        "max_supported_response_tokens": 8192,
-        "response_chunk_element":        "delta.text",
-        "response_nonchunk_element":     "content[0].text",
-        "special_request_schema": {
-            "anthropic_version": "bedrock-2023-05-31"
-        }
-    },
     {
         // ==========================
         // == Claude 3.5 Sonnet v2 ==
